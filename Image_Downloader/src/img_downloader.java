@@ -54,7 +54,7 @@ public class img_downloader {
 			}
 			bout.close();
 			in.close();
-			System.out.println("Download complete!");
+			System.out.println("Download " + i + " complete!");
 			}
 			else {
 				continue;
@@ -68,22 +68,44 @@ public class img_downloader {
 		}
 		
 	}
-
+	public static void APIDownload(String key, String folderPath) {
+		String imgURL = "https://maps.googleapis.com/maps/api/streetview?location=41.403609,2.174448&size=456x456&key=" + key;
+		System.out.println(imgURL);
+		try {
+		URL url = new URL(imgURL); // setting up the url 
+		HttpURLConnection http = (HttpURLConnection)url.openConnection();
+		BufferedInputStream in = new BufferedInputStream(http.getInputStream());
+		File out = new File(folderPath + "\\" + "experimentAPIkey.json"); 
+		
+		FileOutputStream fos = new FileOutputStream(out);
+		BufferedOutputStream bout = new BufferedOutputStream(fos, 1024);
+		bout.close();
+		in.close();
+		System.out.println("Download complete!");
+		}
+		catch(Exception e) {
+			System.out.println("Error");
+		}
+		
+	}
 	public static void main(String[] args) throws FileNotFoundException {
 		Scanner kbd = new Scanner(System.in);  
 		int task; 
+		String filePath, folderPath, key;
 		
 		System.out.println("Welcome to the image downloader! Please select the desired task:");
-		System.out.println("1. Download from csv file");
+		System.out.println("1. Download image URLs from csv file");
+		System.out.println("2. Get data from Zillow API");
+		System.out.println("3. Dynamic scraping");
 		task = kbd.nextInt();
 		
 		if(task == 1) {
 			System.out.print("Please write the document path of your CSV file: ");
-				String filePath = kbd.nextLine();
+				filePath = kbd.nextLine();
 				filePath = kbd.nextLine();
 				
 			System.out.print("Please write the folder path where images will be saved: ");
-				String folderPath = kbd.nextLine();
+				folderPath = kbd.nextLine();
 				
 			System.out.println("File Path: " + filePath);
 			System.out.println("Folder Path: " + folderPath);
@@ -91,7 +113,27 @@ public class img_downloader {
 			System.out.println("Downloading...");
 			csvDownload(filePath, folderPath);
 		}
+		else if(task ==2) {
+			System.out.println("Please enter Google API key: ");
+			key = kbd.nextLine();
+			key = kbd.nextLine();
+			System.out.println("Please write the document path of your CSV file: ");
+			folderPath = kbd.nextLine();
+			APIDownload(key, folderPath);	
+		}
+		else if(task==3) {
+			System.out.print("Please write the document path of your CSV file: ");
+			filePath = kbd.nextLine();
+			filePath = kbd.nextLine();
+			dynamic_scraping Web = new dynamic_scraping(filePath);
+			Web.scrapeImg();
+		}
+		else {
+			System.out.println("Task not supported");
+		}
 
 	}
+
+	
 
 }
